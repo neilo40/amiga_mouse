@@ -41,21 +41,13 @@ int main()
 
     while(1) {
         tuh_task();
-        hid_task();
     }
 }
 
 CFG_TUSB_MEM_SECTION static hid_mouse_report_t usb_mouse_report;
 
-void hid_task(void) 
-{
-    uint8_t const addr = 1;
-    if (tuh_hid_mouse_is_mounted(addr)) {
-        if (!tuh_hid_mouse_is_busy(addr)) {
-            process_mouse_report(&usb_mouse_report);
-            tuh_hid_mouse_get_report(addr, &usb_mouse_report);
-        }
-    }
+void tuh_hid_report_received_cb(uint8_t dev_addr, uint8_t instance, uint8_t const* report, uint16_t len){
+    process_mouse_report( (hid_mouse_report_t const*) report ); 
 }
 
 void toggle(uint pin) {
